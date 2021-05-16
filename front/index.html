@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Share url</title>
+        <script src="share.js"></script>
+        <style>
+
+         #show-last-url:hover {
+             cursor: pointer;
+         }
+
+         .base-button {
+             height: 2rem;
+             width: 10rem;
+             background-color: #4a8eca;
+             border: none;
+             cursor: pointer;
+             color: white;
+         }
+        </style>
+        <script>
+         window.onload = function () {
+             const button = document.getElementById('save-button');
+             const input = document.getElementById('url-input');
+
+             const lastUrlLink = document.getElementById('last-url-link');
+
+             const lastUrlButton = document.getElementById('show-last-url');
+
+             button.onclick = function (event) {
+                 event.preventDefault();
+                 app.shareUrl(input.value);
+                 return false;
+             }
+
+             lastUrlButton.onclick = function (event) {
+                 event.preventDefault();
+                 app.getLastUrl(request => {
+                     const data = JSON.parse(request.response); 
+                     lastUrlLink.innerHTML = data.url;
+                     lastUrlLink.setAttribute('href',data.url);
+                     lastUrlLink.setAttribute('target',"_blank");
+                 });
+
+                 return false;
+             }
+         }
+        </script>
+    </head>
+    <body style="height: 100vh;
+                 display: flex;
+                 flex-direction: column;
+                 justify-content: center;
+                 ">
+        <h1 style="text-align: center; color: #4a8eca">Save your last url</h1>
+        <div style="display: flex;
+                    flex-direction: column;
+                    width: 50%;
+                    margin: 0 auto;
+                    max-width: 50%"
+             margin-top: 5rem;">
+            <form 
+                style="display: flex;
+                       align-items: center;">
+                <label style="display: flex;
+                              width: 100%;
+                              margin-right: 1rem;">
+                    <input  style="width: 100%;
+                                   height: 2rem;"
+                            id="url-input">
+                </label>
+                <button class="base-button"
+                        id="save-button">
+                    Save
+                </button>
+            </form>
+            <div style="margin-top: 1rem;">
+                <button id="show-last-url"
+                        class="base-button"
+                        style="margin-top: 1rem;">show last url</button>
+                <p><a id="last-url-link"></a></p>      
+            </div>
+        </div>
+    </body>
+</html>
