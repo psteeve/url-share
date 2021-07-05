@@ -1,76 +1,76 @@
 const app = (function () {
 
-  function getData(url, callback) {
-    var request = new XMLHttpRequest();
+    function getData(url, callback) {
+        var request = new XMLHttpRequest();
 
-    request.open("GET", url);
+        request.open("GET", url);
 
-    request.onreadystatechange = function () {
-      if (request.readyState === 4 && callback) callback(request);
-    };
+        request.onreadystatechange = function () {
+            if (request.readyState === 4 && callback) callback(request);
+        };
 
-    request.send(null);
-  }
+        request.send(null);
+    }
 
-  /**
-   * Encode the properties of an object as if they were name/value pairs from
-   * an HTML form, using application/x-www-form-urlencoded format
-   */
-  function encodeFormData(data) {
+    /**
+     * Encode the properties of an object as if they were name/value pairs from
+     * an HTML form, using application/x-www-form-urlencoded format
+     */
+    function encodeFormData(data) {
 
-    if (!data) return "";
+        if (!data) return "";
 
-    var pairs = [];
+        let pairs = [];
 
-    for (var name in data) {
+        for (let name in data) {
 
-      if (!data.hasOwnProperty(name)) continue;
+            if (!data.hasOwnProperty(name)) continue;
 
-      if (typeof data[name] === "function") continue;
+            if (typeof data[name] === "function") continue;
 
-      var value = data[name].toString();
+            let value = data[name].toString();
 
-      name = encodeURIComponent(name).replace("%20", "+");
+            name = encodeURIComponent(name).replace("%20", "+");
 
-      value = encodeURIComponent(value).replace("%20", "+");
+            value = encodeURIComponent(value).replace("%20", "+");
 
-      pairs.push(name + "=" + value);
+            pairs.push(`${name}=${value}`);
+        }
+        
+        return pairs.join('&');
+    }
+
+
+    function postData(url, data, callback) {
+
+        var request = new XMLHttpRequest();
+
+        request.open("POST", url);
+
+        request.onreadystatechange = function () {
+            if (request.readyState === 4 && callback) {
+                callback(request);
+            }
+        };
+
+        request.setRequestHeader("Content-Type",
+                                 "application/x-www-form-urlencoded");
+
+        request.send(encodeFormData(data));
+    }
+
+    function shareUrl(url) {
+        postData('/add-url', { url });
+    }
+
+    function getLastUrl(callback) {
+        getData('/last-url', callback);
     }
     
-    return pairs.join('&');
-  }
-
-
-  function postData(url, data, callback) {
-
-    var request = new XMLHttpRequest();
-
-    request.open("POST", url);
-
-    request.onreadystatechange = function () {
-      if (request.readyState === 4 && callback) {
-        callback(request);
-      }
+    return {
+        shareUrl,
+        getLastUrl
     };
-
-    request.setRequestHeader("Content-Type",
-                             "application/x-www-form-urlencoded");
-
-    request.send(encodeFormData(data));
-  }
-
-  function shareUrl(url) {
-    postData('/urls', { url });
-  }
-
-  function getLastUrl(callback) {
-    getData('/last-url', callback);
-  }
-  
-  return {
-    shareUrl,
-    getLastUrl
-  };
-  
+    
 }());
 
