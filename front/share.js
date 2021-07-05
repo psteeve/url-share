@@ -1,17 +1,5 @@
 const app = (function () {
 
-    function getData(url, callback) {
-        var request = new XMLHttpRequest();
-
-        request.open("GET", url);
-
-        request.onreadystatechange = function () {
-            if (request.readyState === 4 && callback) callback(request);
-        };
-
-        request.send(null);
-    }
-
     /**
      * Encode the properties of an object as if they were name/value pairs from
      * an HTML form, using application/x-www-form-urlencoded format
@@ -40,31 +28,22 @@ const app = (function () {
         return pairs.join('&');
     }
 
-
-    function postData(url, data, callback) {
-
-        var request = new XMLHttpRequest();
-
-        request.open("POST", url);
-
-        request.onreadystatechange = function () {
-            if (request.readyState === 4 && callback) {
-                callback(request);
-            }
-        };
-
-        request.setRequestHeader("Content-Type",
-                                 "application/x-www-form-urlencoded");
-
-        request.send(encodeFormData(data));
-    }
-
     function shareUrl(url) {
-        postData('/add-url', { url });
+
+        return fetch('/add-url', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: encodeFormData({url})
+        })
+            .then(response => response)
+            .then(data => callback(data))
+            .catch(error => error => console.log(error))              
     }
 
-    function getLastUrl(callback) {
-        getData('/last-url', callback);
+    function getLastUrl() {
+        return fetch('/last-url');
     }
     
     return {

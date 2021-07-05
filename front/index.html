@@ -32,18 +32,22 @@
 
           button.onclick = function (event) {
               event.preventDefault();
-              app.shareUrl(input.value);
+              return app.shareUrl(input.value, console.log);
               return false;
           }
 
           lastUrlButton.onclick = function (event) {
               event.preventDefault();
-              app.getLastUrl(request => {
-                  const data = JSON.parse(request.response); 
-                  lastUrlLink.innerHTML = data.url;
-                  lastUrlLink.setAttribute('href',data.url);
-                  lastUrlLink.setAttribute('target',"_blank");
-              });
+
+              app.getLastUrl()
+                  .then(response => response.json())
+                  .then(data => {
+                      lastUrlLink.innerHTML = data.url;
+                      lastUrlLink.setAttribute('href', data.url);
+                      lastUrlLink.setAttribute('target', "_blank");
+                  })
+                  .catch(error => error => console.log(error))
+
 
               return false;
           }
