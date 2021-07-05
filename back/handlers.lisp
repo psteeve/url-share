@@ -1,6 +1,6 @@
 (in-package :url-share)
 
-(define-easy-handler (share-url :uri "/urls")
+(define-easy-handler (share-url :uri "/add-url")
     ()
   (setf (hunchentoot:content-type*) "application/json")
   (let ((url (parameter "url")))
@@ -17,4 +17,4 @@
   (with-output-to-string (*standard-output*)
     (yason:encode-alist `(("ok" . true) ("url" . ,(car *urls*))))))
 
-    
+
